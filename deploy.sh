@@ -1,1 +1,1 @@
-docker-compose down; docker-compose -f ./docker-compose-prod.yml up -d
+docker-compose down; docker-compose up -d

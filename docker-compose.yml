@@ -30,7 +30,6 @@ services:
     - traefik.enable=true
     - traefik.frontend.rule=Host:docker.yuyuko.me
     - traefik.port=9000
-    - traefik.protocol=https
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - portainer:/data
