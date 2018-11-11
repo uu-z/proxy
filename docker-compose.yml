@@ -1,0 +1,41 @@
+version: '3'
+services:
+  proxy:
+    image: traefik:latest
+    # command: --web --docker --docker.domain=yuyuko.me --logLevel=INFO --docker.exposedbydefault=false
+    networks:
+    - proxy
+    ports:
+    - "80:80"
+    - "8080:8080"
+    - "443:443"
+    labels: 
+      - traefik.enable=true
+      - traefik.frontend.rule=Host:proxy.yuyuko.me
+      - traefik.port=8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      # - /dev/null:/traefik.toml
+      - ./traefik/traefik.toml:/traefik.toml
+      - ./traefik/acme.json:/acme.json
+    restart: always
+  server:
+    image: portainer/portainer
+    command: -H unix:///var/run/docker.sock
+    networks:
+    - proxy
+    ports:
+    - "9000:9000"
+    labels:
+    - traefik.enable=true
+    - traefik.frontend.rule=Host:docker.yuyuko.me
+    - traefik.port=9000
+    - traefik.protocol=https
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainer:/data
+networks:
+  proxy:
+    external: true
+volumes:
+  portainer:
